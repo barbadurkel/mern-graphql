@@ -5,14 +5,18 @@ const { UserInputError } = require('apollo-server');
 
 const User = require('../../models/User');
 const { SECRET_KEY } = require('../../config'); 
+const { validateRegisterInput } = require('../../util/validators');
 
 
 module.exports = {
     Mutation:{
                                         // destructering args received
         async register(_, { registerInput: { username, email, password, confirmedPassword } }){
-            // TODO: Validate user data
-            // TODO: Make sure user doesn't already exist
+
+            const { valid, errors } = validateRegisterInput (username, email, password, confirmedPassword);
+            if(!valid){
+                throw new UserInputError('Errors', {errors});
+            }
 
             const user = await User.findOne( { username });
             if(user) {
