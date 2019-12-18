@@ -49,9 +49,9 @@ module.exports = {
              
          },  
                                         // destructering args received
-        async register(_, { registerInput: { username, email, password, confirmedPassword } }){
+        async register(_, { registerInput: { username, email, password, confirmPassword } }){
 
-            const { valid, errors } = validateRegisterInput (username, email, password, confirmedPassword);
+            const { valid, errors } = validateRegisterInput (username, email, password, confirmPassword);
             if(!valid){
                 throw new UserInputError('Errors', { errors });
             }
