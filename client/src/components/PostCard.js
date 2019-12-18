@@ -1,15 +1,23 @@
 import React from 'react'
-import { Card, Icon, Label } from 'semantic-ui-react'
-import React from 'react'
+import { Card, Icon, Label, Image, Button } from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 // Receiving the post object passed as props form Home
 function PostCard(props) {
     // This can be deconstructed in the parameters directly
     const { body, createdAt, id, username, likeCount, commentCount, likes, comments } = props.post;
+
+    const likePost = () =>  {
+        console.log('Liked post')
+    }
+
+    const commentPost = () =>  {
+        console.log('commented post')
+    }
     
     return (
-        <Card>
+        <Card fluid>
         <Card.Content>
           <Image
             floated='right'
@@ -17,20 +25,26 @@ function PostCard(props) {
             src='https://react.semantic-ui.com/images/avatar/large/molly.png'
           />
           <Card.Header> { username } </Card.Header>
-          <Card.Meta>{ moment(createdAt).fromNow() }</Card.Meta>
-          <Card.Description>
-            Steve wants to add you to the group <strong>best friends</strong>
-          </Card.Description>
+          <Card.Meta as={Link} to={`/posts/${id}`}> { moment(createdAt).fromNow(true) } </Card.Meta>
+          <Card.Description> { body } </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <div className='ui two buttons'>
-            <Button basic color='green'>
-              Approve
+        <Button as='div' labelPosition='right' onClick={likePost}>
+            <Button color='teal' basic>
+                <Icon name='heart' />
             </Button>
-            <Button basic color='red'>
-              Decline
+            <Label basic color='teal' pointing='left'>
+                {likeCount}
+            </Label>
+        </Button>
+        <Button as='div' labelPosition='right' onClick={commentPost}>
+            <Button color='blue' basic>
+                <Icon name='comments' />
             </Button>
-          </div>
+            <Label basic color='blue' pointing='left'>
+                {commentCount}
+            </Label>
+        </Button>
         </Card.Content>
       </Card>
     )
