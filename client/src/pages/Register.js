@@ -1,22 +1,21 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks'
+
+import { useForm } from '../util/hooks'
 
 function Register(props) {
 
     const [errors, setErrors] = useState({})
-    const [values, setValues] = useState({
-       username: '',
-       password: '',
-       confirmPassword: '',
-       email: ''
+  
+    // Normally, addUSer won't be recognized, hence line 34
+    const { onChange, onSubmit, values } = useForm(registerUser, {
+        username: '',
+        password: '',
+        confirmPassword: '',
+        email: ''
     })
-
-    // we use the same onChange method for 4 fields, so 'Spread' the existing values before adding the new value
-    const onChange = e =>  {
-        setValues({...values, [e.target.name]: e.target.value})
-    }
 
     const [ addUser, { loading }] = useMutation(REGISTER_USER, {
         update(_, result){
@@ -29,12 +28,13 @@ function Register(props) {
         },
         variables: values
     })
-    
-    const onSubmit = e =>  {
-        e.preventDefault();
+
+    // In JS, all the functions with the keyword 'function" are hoisted IN THE BEGINNING of the exec.
+    // therefore : 
+    function registerUser(){
         addUser();
     }
-   
+
     return (
         <div className="form-container">
             {/* noValidate, because by default HTML5 does email validation, we already done that in the backend */}
