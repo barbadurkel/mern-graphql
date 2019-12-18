@@ -1,11 +1,72 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Form, Button } from 'semantic-ui-react'
+import gql from 'graphql-tag'
+import { useMutation } from '@apollo/react-hooks'
 
-function Login() {
+import { useForm } from '../util/hooks'
+
+function Login(props) {
+
+    const [errors, setErrors] = useState({})
+  
+    const { onChange, onSubmit, values } = useForm(loginUserCallback, {
+        username: '',
+        password: '',
+    })
+
+    const [ loginUser, { loading }] = useMutation(LOGIN_USER, {
+        update(_, result){
+            props.history.push('/')
+        }, 
+        onError(err){
+            setErrors(err.graphQLErrors[0].extensions.exception.errors)
+        },
+        variables: values
+    })
+
+    // In JS, all the functions with the keyword 'function" are hoisted IN THE BEGINNING of the exec.
+    // therefore : 
+    function loginUserCallback(){
+        loginUser();
+    }
+
     return (
-        <div>
-            <h1>Login Page</h1> 
+        <div className="form-container">
+            {/* noValidate, because by default HTML5 does email validation, we already done that in the backend */}
+            <Form onSubmit={onSubmit} noValidate className={loading ? "loading" : ''}> 
+                <h1> Log In </h1>
+                <Form.Input label="Username" placeholder="Username.." name="username" type="text" value={values.username} error={errors.username? true : false} onChange={onChange}/>
+                <Form.Input label="Password" placeholder="Password.." name="password" type="password" error={errors.password? true : false} value={values.password} onChange={onChange}/>
+                <Button type='submit' primary>
+                    Log In
+                </Button>
+            </Form>
+            { Object.keys(errors).length > 0 && (
+                <div className="ui error message">
+                    <ul className="list">
+                        {Object.values(errors).map(value => (
+                            <li key={value}> {value} </li>
+                        ))}
+                    </ul>
+                </div>
+                                                )
+            }
         </div>
     )
 }
+// DECALRE the mutation and USE it
+const LOGIN_USER = gql `
+    mutation login(
+        $username: String!
+        $password: String!
+    ){
+        login(
+                username: $username
+                password: $password
+        ){
+            id email username createdAt token
+        }
+    }
+`
 
 export default Login;
