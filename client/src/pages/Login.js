@@ -7,9 +7,9 @@ import { useForm } from '../util/hooks'
 
 function Login(props) {
 
-    const [errors, setErrors] = useState({})
+    const [ errors, setErrors ] = useState({})
   
-    const { onChange, onSubmit, values } = useForm(loginUserCallback, {
+    const [ onChange, onSubmit, values ] = useForm(loginUserCallback, {
         username: '',
         password: '',
     })

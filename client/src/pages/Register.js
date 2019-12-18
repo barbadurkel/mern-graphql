@@ -7,10 +7,10 @@ import { useForm } from '../util/hooks'
 
 function Register(props) {
 
-    const [errors, setErrors] = useState({})
+    const [ errors, setErrors ] = useState({})
   
     // Normally, addUSer won't be recognized, hence line 34
-    const { onChange, onSubmit, values } = useForm(registerUser, {
+    const [ onChange, onSubmit, values ]= useForm(registerUser, {
         username: '',
         password: '',
         confirmPassword: '',

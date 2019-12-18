@@ -14,7 +14,6 @@ export const useForm = (callback, initialState = {}) => {
         // Callback is different according to page : addUser, addComment...
         callback();
     }
-    return {
-        onChange, onSubmit, values
-    }
+    var arr = [onChange, onSubmit, values]
+    return arr;
 }
