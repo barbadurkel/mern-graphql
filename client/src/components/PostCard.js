@@ -17,7 +17,7 @@ function PostCard(props) {
             src='https://react.semantic-ui.com/images/avatar/large/molly.png'
           />
           <Card.Header> { username } </Card.Header>
-          <Card.Meta>{ createdAt }</Card.Meta>
+          <Card.Meta>{ moment(createdAt).fromNow() }</Card.Meta>
           <Card.Description>
             Steve wants to add you to the group <strong>best friends</strong>
           </Card.Description>
