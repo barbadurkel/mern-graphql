@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { Grid } from 'semantic-ui-react';
 
+import { AuthContext } from '../context/auth';
 import PostCard from '../components/PostCard';
+import PostForm from '../components/PostForm';
 
 function Home() {
+    const { user } = useContext(AuthContext)
     // the data is stored inside an object 'getPosts', deconstruct the data and use alias 'post'
     // useQuery returns a promise, which means the deconstruction will not work because data is undefined
     // a workaround is initializing the data with an empty object (the value will change once the useQuery is completeds)
@@ -16,6 +19,13 @@ function Home() {
         <Grid columns={3} >
         <Grid.Row className="page-title">
             <h1> Recent Posts </h1>
+        </Grid.Row>
+        <Grid.Row>
+            { user && (
+                <Grid.Column>
+                    <PostForm/>
+                </Grid.Column>
+            )}
         </Grid.Row>
         <Grid.Row>
            { loading ? (
