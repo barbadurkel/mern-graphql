@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 
+import { AuthContext } from '../context/auth'
 import { useForm } from '../util/hooks'
 
 function Register(props) {
+
+    const context = useContext(AuthContext)
 
     const [ errors, setErrors ] = useState({})
   
@@ -18,9 +21,9 @@ function Register(props) {
     })
 
     const [ addUser, { loading }] = useMutation(REGISTER_USER, {
-        update(_, result){
+        update(_, { data : { register: userData }}){
+            context.login(userData)
             // Redirect to homepage after registration
-            console.log(result)
             props.history.push('/')
         }, 
         onError(err){
