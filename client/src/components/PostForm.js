@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 
 import { useForm } from '../util/hooks'
+import { FETCH_POSTS_QUERY } from '../util/graphql'
 
 function PostForm() {
 
@@ -14,9 +15,18 @@ function PostForm() {
 
     const [ createPost, { error }] = useMutation(CREATE_POST, {
         variables: values,
-        update(_,result){
-            console.log(result)
-            values.body = ''
+        // Here we're caching the data received by executing the query in the memory
+        // The data is stored initially in the mutation 'createPost'
+        update(proxy, result){
+            const data = proxy.readQuery({
+                query: FETCH_POSTS_QUERY
+            });
+            const newPost = result.data.createPost;
+            proxy.writeQuery ({
+                 query: FETCH_POSTS_QUERY, 
+                 data: { getPosts: [newPost, ...data.getPosts]}
+                 });
+            values.body = '';
         }
     })
 

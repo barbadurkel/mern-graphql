@@ -1,19 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import { Grid } from 'semantic-ui-react';
 
 import { AuthContext } from '../context/auth';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
+import { FETCH_POSTS_QUERY } from '../util/graphql'
 
 function Home() {
+    const [posts, setPosts] = useState([]);
     const { user } = useContext(AuthContext)
     // the data is stored inside an object 'getPosts', deconstruct the data and use alias 'post'
     // useQuery returns a promise, which means the deconstruction will not work because data is undefined
     // a workaround is initializing the data with an empty object (the value will change once the useQuery is completeds)
     // https://github.com/apollographql/react-apollo/issues/3323     Aug 2019
-    const { loading, data: { getPosts: posts } = {} } = useQuery(FETCH_POSTS_QUERY);
+    const { loading, data } = useQuery(FETCH_POSTS_QUERY);
+
+    useEffect( () =>  {
+        if(data) setPosts(data.getPosts)
+    }, [data])
 
     return (
         <Grid columns={3} >
@@ -43,21 +48,6 @@ function Home() {
       </Grid>
     );
 }
-// USE the query
-const FETCH_POSTS_QUERY = gql`
-    {
-     getPosts{
-         id body createdAt username likeCount 
-         likes {
-             username
-         }
-         commentCount
-         comments {
-            id
-            username
-         }
-     }   
-    }
-`
+
 
 export default Home;
