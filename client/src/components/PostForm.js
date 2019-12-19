@@ -8,7 +8,7 @@ import { useForm } from '../util/hooks'
 
 function PostForm() {
 
-    const  [ values, onChange, onSubmit ] = useForm(createPostCallback, {
+    const  [ onChange, onSubmit, values ] = useForm(createPostCallback, {
         body: ''
     })
 
